@@ -43,8 +43,3 @@ dependencies {
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile("org.junit.jupiter:junit-jupiter-api:5.0.2")
 }
-
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.6'
-}
