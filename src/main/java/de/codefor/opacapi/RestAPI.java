@@ -20,15 +20,13 @@ import org.json.JSONObject;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.security.Security;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 public class RestAPI {
@@ -133,6 +131,29 @@ public class RestAPI {
         return searchFields;
     }
 
+    @RequestMapping(value = "/libraries/{libraryName}/catalog/structured-search",
+            method = RequestMethod.GET,
+            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE},
+            consumes = MediaType.ALL_VALUE)
+    public CatalogSearchResults structuredSearch(@PathVariable String libraryName,
+                                                 HttpServletRequest request)
+            throws IOException, JSONException, OpacApi.OpacErrorException {
+
+        Map<String, String[]> map = request.getParameterMap();
+        List<SearchQuery> searchQueries = new ArrayList<>();
+
+        for (Map.Entry<String, String[]> entry : map.entrySet()) {
+            SearchField searchField = new SearchField() {};
+            searchField.setId(entry.getKey());
+            searchQueries.add(new SearchQuery(searchField, entry.getValue()[0]));
+        }
+
+        OpacApi api = getOpacApi(libraryName);
+        Map<String, SearchRequestResult> results = new HashMap<>();
+        results.put(libraryName, api.search(searchQueries));
+
+        return new CatalogSearchResults(results);
+    }
 
     @RequestMapping(value = "/libraries/{libraryName}/catalog/search",
             method = RequestMethod.GET,
