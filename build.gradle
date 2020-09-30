@@ -7,6 +7,7 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.0.RELEASE")
+        classpath("com.github.ben-manes:gradle-versions-plugin:0.27.0")
     }
 }
 
@@ -14,6 +15,7 @@ buildscript {
 group = 'opacapi'
 version = '1.0-SNAPSHOT'
 
+apply from: 'gradle/gradle-versions.gradle'
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'application'
